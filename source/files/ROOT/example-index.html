@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<title>Geneva</title>
+		<link rel="stylesheet" href="/styles.css" type="text/css"/>
+		<script language="JavaScript" type="text/javascript" src="/JSAJAX.js">;</script>
+		<script language="JavaScript" type="text/javascript" src="/JSUser.js">;</script>
+		<script>
+			var user;
+			function getUsername() {
+				user = new User();
+				var p = document.getElementById("up");
+				if (user.isLoggedIn) {
+					p.appendChild(document.createTextNode("You are logged in as "+user.name+"."));
+					p.appendChild(document.createElement("BR"));
+					var a = document.createElement("A");
+					a.setAttribute("href","/login?logout");
+					a.appendChild(document.createTextNode("logout"));
+					p.appendChild(document.createTextNode("( "));
+					p.appendChild(a);
+					p.appendChild(document.createTextNode(" )"));
+					if (!user.hasRole("admin")) hide("usermanager");
+					if (!user.hasRole("admin") && !user.hasRole("company")) {
+						hide("editor");
+						hide("controlpanel");
+					}
+				}
+				else {
+					p.appendChild(document.createTextNode("You are not logged in."));
+					hide("usermanager");
+					hide("editor");
+					hide("controlpanel");
+					hide("password");
+				}
+			}
+			function hide(id) {
+				x = document.getElementById(id);
+				if (x) x.parentNode.removeChild(x);
+			}
+			window.onload = getUsername;
+		</script>
+	</head>
+	<body>
+		<center>
+		<img src="/masthead.jpg"/>
+		<br><br>
+		<table>
+			<tr>
+				<td><input style="width:200" type="button" value="Register a Patient"
+						onclick="window.open('registration','_self');"></td>
+			</tr>
+			<tr id="spacer"><td>&nbsp;</td></tr>
+			<tr>
+				<td><input style="width:200" type="button" value="Login"
+						onclick="window.open('login','_self');"></td>
+			</tr>
+			<tr id="password">
+				<td><input style="width:200" type="button" value="Change Password"
+						onclick="window.open('password','_self');"></td>
+			</tr>
+			<tr id="usermanager">
+				<td><input style="width:200" type="button" value="User Manager"
+						onclick="window.open('users','_self');"></td>
+			</tr>
+			<tr>
+				<td><input style="width:200" type="button" value="Log Viewer"
+						onclick="window.open('logs','_self');"></td>
+			</tr>
+			<tr>
+				<td><input style="width:200" type="button" value="System Properties"
+						onclick="window.open('system','_self');"></td>
+			</tr>
+			<tr id="spacer"><td>&nbsp;</td></tr>
+			<tr>
+				<td><input style="width:200" type="button" value="Configuration"
+						onclick="window.open('configuration','_self');"></td>
+			</tr>
+			<tr id="editor">
+				<td><input style="width:200" type="button" value="Configuration Editor"
+						onclick="window.open('editor','_self');"></td>
+			</tr>
+			<tr id="controlpanel">
+				<td><input style="width:200" type="button" value="Control Panel"
+						onclick="window.open('controlpanel','_self');"></td>
+			</tr>
+			<tr>
+				<td><input style="width:200" type="button" value="Dashboard"
+						onclick="window.open('dashboard','_self');"></td>
+			</tr>
+			<tr>
+				<td><input style="width:200" type="button" value="Demographic Query"
+						onclick="window.open('pdq','_self');"></td>
+			</tr>
+			<tr id="spacer"><td>&nbsp;</td></tr>
+			<tr>
+				<td><input style="width:200" type="button" value="Help"
+						onclick="window.open('help.html','_self');"></td>
+			</tr>
+		</table>
+		<p id="up"> </p>
+		</center>
+	</body>
+</html>

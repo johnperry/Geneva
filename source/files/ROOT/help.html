@@ -1,0 +1,391 @@
+<html>
+	<head>
+		<title>Geneva Help</title>
+	</head>
+	<body>
+		<center><h1>Geneva Configuration Instructions</h1></center>
+		Geneva is a support tool for IHE demonstrations.
+		<h2>1 Directory Structure</h2>
+		The program's directory contains the following files and directories:
+		<ul>
+			<li><b>Geneva.jar</b> - the executable jar file for the program.
+			<li><b>config.xml</b> - the demo configuration file.
+			<li><b>config.properties</b> - the persistent properties.
+			<li><b>test-config.xml</b> - a configuration file for use in software development.
+			<li><b>vc-config.xml</b> - a configuration file for use in the virtual connectathon.
+			<li><b>example-config.xml</b> - an example configuration file.
+			<li><b>addresses.xml</b> - the set of addresses for registrations.
+			<li><b>registrations.xml</b> - the database of registrations.
+			<li><b>log4j.jar</b> - the program library for error logging.
+			<li><b>log4j.properties</b> - the configuration file for log4j.
+			<li><b>dcm4che.jar</b> - the DICOM library.
+			<li><b>other jar files</b> - software libraries.
+			<li><b>studies</b> - the directory containing the DICOM studies to be used in the demonstration.
+			<li><b>docsets</b> - the directory containing the document sets to be used in the demonstration.
+			<li><b>example-studies</b> - a directory containing some test studies.
+			<li><b>example-docsets</b> - a directory containing a test document set.
+			<li><b>ROOT</b> - the root directory of the HTTP server.
+			<li><b>stylesheets</b> - the directory containing the XSL stylesheets used by the KOS uploading function.
+		</ul>
+		The ROOT directory is the base directory for the HTTP server and the root of the servlet paths.
+		It contains the following files and directories:
+		<ul>
+			<li><b>example-index.html</b> - an example of an index.html page containing links to XDSdemo servlets.
+			<li><b>help.html</b> - this help page.
+			<li><b>registration</b> - the base directory of the registration servlet.
+			<li><b>pdq</b> - the base directory of the demographic query servlet.
+			<li><b>messages</b> - the base directory of the messages servlet.
+		</ul>
+		<h2>2 Geneva.jar</h2>
+		The program can be run on a Windows system by double-clicking this file.
+		<p>
+		If it is desired to monitor any possible error log entries (for example, by the DICOM library), the program should be run from a command window using the command:
+		<ul><li>java -jar Geneva.jar</ul>
+		If memory problems are experienced during operation, it may be necessary to increase the heap space available for Java. This can be accomplished by adding the <b>mx</b> and <b>ms</b> parameters to the command:
+		<ul><li>java -Xms256m -Xmx256m -jar Geneva.jar</ul>
+		On a Windows system, these parameters can be added to the default start parameters for the <b>jar</b> file type so they will be applied when the program is started by double-clicking the jar file.
+
+		<h2>3 config.xml</h2>
+		When the program starts, it loads the <b>config.xml</b> file. If the file is not present, it copies the <b>example-config.xml</b> file into <b>config.xml</b> and then loads the configuration. This allows upgrades to be done without overwriting existing configuration files.
+		<p>
+		The configuration file contains all the information necessary to define the demonstration. It is an XML file which can be edited with any text editor. Special care must be taken that the file be well-formed. Note that the assigning authority attributes in the file contain ampersands which must be escaped in the file as shown below. After editing the file, it is wise to open it in a program that will parse the file and report errors. One such program is Internet Explorer. The configuration file has the following structure:
+		<pre>
+&lt;config
+	askOnClose="no"
+	uidRoot="1.2.3.4.5.6.7"
+	logDepth="100"
+	serverPort="80"
+	globalAssigningAuthority="RSNA_GLOBAL&amp;amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"
+	localAssigningAuthority="RSNA_LOCAL&amp;amp;1.2.6.1.4.1.21367.2005.1.2&amp;amp;ISO"&gt;
+
+	&lt;registry id="Registry1"
+		hl7URL="http://localhost:3900"
+		receivingApplication="Registry1"
+		receivingFacility="facility"
+		acceptsITI8withGlobalID="yes"
+		acceptsITI8withLocalID="no"
+		globalAssigningAuthority="RSNA_GLOBAL&amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"/&gt;
+
+	&lt;pixmgr id="PIXMgr1"
+		hl7URL="http://localhost:3900"
+		receivingApplication="PIXMgr1"
+		receivingFacility="facility"
+		acceptsITI8withGlobalID="yes"
+		acceptsITI8withLocalID="no"
+		globalAssigningAuthority="RSNA_GLOBAL&amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"/&gt;
+
+	&lt;pdqmgr id="PDQMgr1"
+		hl7URL="http://localhost:3900"
+		receivingApplication="PDQMgr1"
+		receivingFacility="facility"
+		acceptsITI8withGlobalID="yes"
+		acceptsITI8withLocalID="no"
+		globalAssigningAuthority="RSNA_GLOBAL&amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"/&gt;
+
+	&lt;repository id="Repository1"
+		soapURL="http://localhost:3901"
+		globalAssigningAuthority="RSNA_GLOBAL&amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"
+		docsetDelay="10000"/&gt;
+
+	&lt;ehrsystem id="EHRSystem1"
+		hl7URL="http://localhost:3900"
+		receivingApplication="EHRSystem1"
+		receivingFacility="facility"
+		acceptsITI8withGlobalID="no"
+		acceptsITI8withLocalID="no"
+		sendsITI8withLocalID="no"
+		acceptsRAD1="no"
+		acceptsMessages="no"
+		globalAssigningAuthority="RSNA_GLOBAL&amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"
+		localAssigningAuthority="RSNA_LOCAL1&amp;amp;1.2.6.1.4.1.21367.2005.1.2&amp;amp;ISO"&gt;
+			&lt;hl7 msg="ITI8" segment="PV1" seq="7" value="PV1-7 value"/&gt;
+			&lt;hl7 msg="ITI8" segment="PV1" seq="9" value="PV1-9 value"/&gt;
+	&lt;/ehrsystem&gt;
+
+	&lt;dcmsystem id="DCMSystem1"
+		hl7URL="http://localhost:3900"
+		receivingApplication="DCMSystem1"
+		receivingFacility="facility"
+		acceptsITI8withGlobalID="no"
+		acceptsITI8withLocalID="no"
+		sendsITI8withLocalID="no"
+		acceptsRAD1="yes"
+		acceptsRAD4="yes"
+		dcmURL="dicom://TCE:XDSDEMO@localhost:104"
+		sendsKOS="yes"
+		repositoryID="Repository1"
+		retrieveAET="RetrieveAETitle"
+		institutionName="Hospital 1"&gt;
+		pointOfCare="WestTower"
+		globalAssigningAuthority="RSNA_GLOBAL&amp;1.2.6.1.4.1.21367.2005.1.1&amp;amp;ISO"
+		localAssigningAuthority="RSNA_LOCAL2&amp;amp;1.2.6.1.4.1.21367.2005.1.3&amp;amp;ISO"&gt;
+			&lt;hl7 msg="RAD1" segment="PV1" seq="7" value="PV1-7 value"/&gt;
+			&lt;hl7 msg="RAD1" segment="PV1" seq="9" value="PV1-9 value"/&gt;
+			&lt;hl7 msg="RAD4" segment="PV1" seq="6" value="PV1-6 value"/&gt;
+	&lt;/dcmsystem&gt;
+
+	&lt;study id="Study1"
+		dcmsystemID="DCMSystem1"
+		directory="studies/study1"
+		date="20000101"
+		description="..."
+		placerOrderAuthority="XDSDEMO_ORDPLC"
+		fillerOrderAuthority="XDSDEMO_ORDFIL"
+		enteringOrganization="922229-10^IHE-RAD^IHE-CODE-231"
+		procedureCode="P1^Procedure 1^XDSDEMO"
+
+		bodyPartExamined="KNEE"
+
+		rpcsCodeValue="RID13071-RID2743-RID10437"
+		rpcsCodingSchemeDesignator="RADLEX"
+		rpcsCodingSchemeVersion="BETA"
+		rpcsCodeMeaning="CR-CHEST-PA-LATERAL"
+
+		arcsCodeValue="RID2743-RID5825"
+		arcsCodingSchemeDesignator="RADLEX"
+		arcsCodingSchemeVersion="BETA"
+		arcsCodeMeaning="KNEE-RIGHT"
+
+		localProcedureCode="X1_A1^SP Action Item X1_A1^DSS_XDSDEMO" /&gt;
+
+	&lt;docset	id="DocSet1"
+		repositoryID="Repository1"
+		directory="docsets/docset1"
+		document="document1.xml"
+		template="xmlToFO.xsl"
+		metadata="metadata1.xml"
+		title="Document Title"
+		date="20000101"
+		institutionName="Hospital 1"/&gt;
+
+	&lt;docset	id="DocSet2"
+		repositoryID="Repository1"
+		directory="docsets/docset2"
+		title="ECG Study"
+		date="*"
+		institutionName="Hospital 2"/&gt;
+
+	&lt;message id="Message1"
+		ehrsystemID="EHRSystem1"
+		file="messages/message1"/&gt;
+&lt;/config&gt;
+</pre>
+		<b>Notes:</b>
+		<ul>
+			<li><b>askOnClose</b> defines whether the program asks the user if he is sure he wants to stop the application when the close box is clicked.
+			<li><b>uidRoot</b> is the root from which the program creates replacement UIDs for each transmission. The uidRoot should be a real UID obtained from an authority.
+			<li><b>logDepth</b> defines the size of the circular buffer of log entries. A reasonable value is a few hundred. The default size is 100.
+			<li><b>serverPort</b> defines the port on which the HTTP server listens for GETs and POSTs. The default is port 80. Two conditions may require using a different port:
+			<ul>
+				<li>If the program is run on a system which is also running a web server, port 80 may be in use.
+				<li>If the program is run on a Unix system, port 80 may not be allowed.
+			</ul>
+			<li>The <b>config</b> element's <b>globalAssigningAuthority</b> attribute specifies the default Global Assigning Authority string which is used if the configuration for a system does not include a globalAssigningAuthority attribute. The default value is "RSNA_GLOBAL&1.2.6.1.4.1.21367.2005.1.1&ISO".
+			<li>The <b>config</b> element's <b>localAssigningAuthority</b> specifies the default Local Assigning Authority  string which is used if the configuration for a system does not include a localAssigningAuthority attribute. The default value is "RSNA_LOCAL&1.2.6.1.4.1.21367.2005.1.1&ISO".
+			<br><br>
+			<li>Each individual system must be represented by an element identifying its type (PIX Manager, PDQ Manager, Repository, EHR System, and DICOM System) and providing the attributes of the system. The <b>id</b> attributes of these elements must be unique within the entire demonstration. One element of each system type is shown in the example above.
+			<li>The <b>hl7URL</b> attributes must start with the http protocol even though the protocol is not used.
+			<li>Each system has two attributes to determine whether the Registration Servlet is to send ITI8 messages to the system. If <b>acceptsITI8withGlobalID</b> is set to anything other than "no", an ITI8 containing the patient's global ID is sent to the system when the patient is registered. The <b>acceptsITI8withLocalID</b> does the same thing with the local ID. Typical values for each system type are specified in the example.
+			<li>The <b>receivingApplication</b> and <b>receivingFacility</b> attributes specify the values to be used in the MSH segments of HL7 messages sent to the system. The corresponding sending fields are "XDSDEMO_ADT" and "XDSDEMO" for ITI8 and RAD1 messages and "XDSDEMO_OF" and "XDSDEMO" for RAD4 messages.
+			<li>Each system element may contain an optional <b>timeout</b> attribute specifying the maximum time in milliseconds to wait for a response from the system when an HL7 message is transmitted. If the attribute is missing, zero is assigned. A value of zero is interpreted to be the default value (5000 ms).
+			<li>Each system element may contain <b>hl7</b> child elements to define additional fields to be added to HL7 messages sent to the system. These elements are optional and are intended only to support systems which require special fields values not required by the IHE technical framework. Examples are shown in the <b>ehrsystem</b> and <b>dcmsystem</b> elements above, but they can appear in any system element.
+			<li>A system element's <b>globalAssigningAuthority</b> specifies the Global Assigning Authority string which is used when sending HL7 messages to or from the system. If the attribute is missing, the default value is used. Systems which have the same globalAssigningAuthority attribute value will be given the same global ID for a patient. This attribute effectively segregates systems into multiple demonstrations on the basis of their Global Assigning Authority values. If only one demonstration is being managed by the XDSdemo application, the globalAssigningAuthority attributes of the system elements can be omitted, causing the default value to be used for all systems.
+			<li>The <b>ehrsystem</b> and <b>dcmsystem</b> elements have a <b>localAssigningAuthority</b> attribute that specifies the Local Assigning Authority string which is used when sending HL7 messages to or from the system. If the attribute is missing, the default value is used. Systems which have the same localAssigningAuthority attribute value will be given the same local ID for a patient. In order to generate different local IDs for a patient on each system, all the systems must have different localAssigningAuthority values.
+
+			<li>The <b>ehrsystem</b> and <b>dcmsystem</b> elements also have a <b>sendsITI8withLocalID</b> attribute that determines whether an ITI8 containing the local ID is to be sent to all PIX Managers (in the same Global Assigning Authjority) that accept such messages. The Registration Servlet only sends one such ITI8 (to each destination) for all the systems sharing a single <b>localAssigningAuthority</b>. This feature is intended to allow local affinity domains to be individually configured whether to supply local IDs to the PIX Managers.
+
+			<li>The <b>ehrsystem</b> and <b>dcmsystem</b> elements also have an <b>acceptsMessages</b> attribute that determines whether the system will receive HL7 messages that are specially constructed from XML files. These messages are typically used for referrals or discharge summaries, but they can be used to construct any type of HL7 message. Any value except "yes" is interpreted as "no".
+
+			<li>DICOM Systems have additional attributes that define whether they accept ORM messages and whether the XDSdemo program is to transmit the KOS to the assigned Repository after images are sent to the DICOM System. For all these attributes, any value except "no" is interpreted as "yes".
+
+			<br><br>
+			<li>All systems have a <b>startupDelay</b> attribute that determines the length of time (in milliseconds) to delay before starting its thread that handles a registration. Each system has an independent thread, and in some cases, for example when a single PIX Manager is servicing multiple global affinity domains (where the physical system is represented in the configuration by multiple <b>pixmgr</b> elements - one for each Global Assigning Authority), it is necessary to delay the threads by different times to prevent the system from receiving too many HL7 connections at once. If the <b>startupDelay</b> attribute is missing, no delay is used.
+			<li>PIX Managers and Registries also have a <b>connectionInterval</b> attribute that determines the minimum time (in milliseconds) between HL7 connections to the system. The default value is zero.
+
+			<br><br>
+			<li>Repositories have a <b>docsetDelay</b> attribute that determines the length of time (in milliseconds) to delay before the docsets are processed. The purpose of this attribute is to give time for registries to process registrations before receiving requests for patient IDs associated with reports. If the <b>docsetDelay</b> attribute is missing, no delay is used.
+
+			<br><br>
+			<li>Each <b>study</b> element references a single DICOM System through the <b>dcmsystemID</b> attribute.
+			<li>Each <b>docset</b> element references a single Repository through the <b>repositoryID</b> attribute.
+			<li>For both studies and document sets, the <b>directory</b> attribute specifies the path to the directory containing its files. The path can be absolute or relative to the directory containing the program.
+			<li>For both studies and document sets, the <b>date</b> attribute specifies the value used to replace the date elements in DICOM studies and document sets before transmission. The value must be a valid DICOM date (YYYYMMDD). If the value is an asterisk, the program uses the current date.
+			<li>The <b>template</b> attribute of the <b>docset</b> element specifies the name of the XSL transformation file that converts the DocSet's XML file into a Formatting Objects file before conversion to a PDF. This allows each document to have a different format if desired.
+			<li>DocSets must contain one XML file to define the content of the document. This file may contain elements that instruct the template XSL file to insert specific values from the registration into the Formatting Objects file (for example, patient name, patient ID, etc.).
+		</ul>
+
+		<h2>4 addresses.xml</h2>
+		The <b>addresses.xm</b> file contains a set of addresses to be supplied to registrants. The set is treated as a circular buffer. Each registration is given the next address in line, wrapping back to the beginning when the end of the list is reached. As the demonstration progresses, therefore, the distribution of addresses will be the same as the distribution in the set. The format of the file is:
+		<pre>
+&lt;addresses&gt;
+
+	&lt;address
+		sex="M" or "F"
+		street="Elm St."
+		city="Smallville"
+		state="KA"
+		zip="55555"
+		country="US" /&gt;
+
+	&lt;address
+		street="State St."
+		city="Hampshire"
+		state="IL"
+		zip="60104"
+		country="US" /&gt;
+
+	...etc...
+
+&lt;/addresses&gt;
+		</pre>
+		If a sex attribute is present with a value of "M" or "F", it applies only to registrations of the corresponding sex. If a sex attribute is not present or if it has any other value, it applies to registrations of either sex.
+		<p>The <b>country</b> attribute is optional. The default is <b>US</b>.
+		<p>Street addresses should not include house numbers. When the <b>addresses.xml</b> file is parsed, the street addresses are separated from the rest of the addresses, and any non-blank street addresses are added to a list. When a registration is received, a random selection of street, with a randomly generated house number, is applied to the next city/state/zip/country. Thus, not all <b>address</b> elements must include a <b>street</b> attribute, but at least one <b>street</b> attribute must be present somewhere in the file.
+
+		<h2>5 DICOM Studies</h2>
+		The <b>studies</b> directory contains one subdirectory for each DICOM study. Each subdirectory must contain only the DICOM instances to be processed and transmitted. Note that a <b>studies</b> subdirectory can be referenced by multiple <b>study</b> elements in the config.xml file.
+
+		<h2>6 Document Sets</h2>
+		The <b>docsets</b> directory contains one subdirectory for each document. A <b>docsets</b> subdirectory can be referenced by multiple <b>docset</b> elements in the config.xml file. Each subdirectory contains the following files:
+		<ul>
+			<li><b>pdfSource.xml</b>: The XML file containing the text and image references necessary for creation of the PDF file. This file is only present for docsets which create PDF documents and encapsulate them within a CDA document.
+			<li>Any image files referenced by the <b>pdfSource.xml</b> file which are to be included in the PDF document.
+			<li><b>cdaSource.xml</b>: The XML file which contains the source of the CDA which is created for transmission to the Repository.
+			<li><b>metadataSource.xml</b>: The XML file containing the SOAP metadata for transmission to the Repository.
+		</ul>
+		Each of the source files can contain special elements which insert information from the configuration or the registration into the constructed document, allowing different documents to be created from the same instructions.
+
+
+		<h2>7 Messages</h2>
+		The <b>messages</b> directory contains one XML file for each message to be constructed. A message file can be referenced by multiple <b>message</b> elements in the config.xml file. A message file defines a single HL7 message as in this example:
+		<pre>
+&lt;a03&gt;
+	&lt;msh&gt;
+		&lt;seq n="9"&gt;ADT^A03^ADT_A01&lt;/seq&gt;
+	&lt;msh&gt;
+	&lt;evn&gt;
+		&lt;seq n="1"&gt;A03&lt;/seq&gt;
+		&lt;seq n="2"&gt;@dateTime&lt;/seq&gt;
+		&lt;seq n="6"&gt;@dateTime&lt;/seq&gt;
+	&lt;/evn&gt;
+	&lt;pid/&gt;
+&lt;/a03&gt;
+		</pre>
+		Message and segment names are converted to upper case when they are inserted into the HL7 structure. The most common segments are populated by default from the EHRSystem's configuration parameters or from the registration. If any <b>seq</b> elements appear in the segment, they override the prepopulated values. The <b>@dateTime</b> reference generates the current date and time string. The value of a field is trimmed before being inserted into its segment.
+
+		<h2>8 HTTP Server</h2>
+		The <b>ROOT</b> directory is the base directory of the HTTP server. The server returns files in this directory in response to HTTP GETs. The server supports sub-paths from this directory (for example, http://localhost/xyz/abc.html). The server attempts to assign a proper content type for all files as defined below. It always suppresses caching.
+
+		<h2>8.1 Path Evaluation</h2>
+		When the HTTP server receives a request, it evaluates the path to identify the servlet which will handle the request. The servlets are:
+		<ul>
+		<li><b>ConfigurationServlet</b> (/configuration) - returns a page displaying the contents of the configuration file, providing web access to the same information that is displayed in the Configuration tab of the XDSdemo program.
+		<li><b>DashboardServlet</b> (/dashboard) - returns a page displaying the current operating parameters of the program (currently the number of registrations in the registration database and the contents of the event log).
+		<li><b>RegistrationServlet</b> (/registration) - provides access to the registration system. On an HTTP GET, this displays the contents of the /registration/index.html page. On an HTTP POST, it triggers the processing of the registration using the parameters provided in the posted form. This is the main function of the entire system.
+		<li><b>PDQServlet</b> (/pdq) - provides access to the demographic query system. On an HTTP GET, this displays the contents of the /pdq/index.html page. On an HTTP POST, it searches the registration database for registrations that match the parameters provided in the posted form and returns a page showing their elements.
+		<li><b>MessagesServlet</b> (/messages) - provides access to collections of HL7 messages that have been captured using the program's Special tab.
+		<li><b>Servlet</b> - returns the file identified by the path. If the path is a directory, it attempts to return the index.html file in that directory. This is the servlet that is run by default when the path does not correspond to any other servlet.
+
+		</ul>
+		<h2>8.2 Content Types</h2>
+		The HTTP Server's default servlet returns files with content types that correspond to their file extensions. It knows only the following extensions:
+		<br><br>
+		<center><table border="1">
+			<tr><th>Extension</th><th>Content-Type</th></tr>
+			<tr><td>&nbsp;html&nbsp;</td><td>&nbsp;text/html;charset=UTF-8&nbsp;</td></tr>
+			<tr><td>&nbsp;htm&nbsp;</td><td>&nbsp;text/html;charset=UTF-8&nbsp;</td></tr>
+			<tr><td>&nbsp;xml&nbsp;</td><td>&nbsp;text/xml;charset=UTF-8&nbsp;</td></tr>
+			<tr><td>&nbsp;txt&nbsp;</td><td>&nbsp;text/plain;charset=UTF-8&nbsp;</td></tr>
+			<tr><td>&nbsp;gif&nbsp;</td><td>&nbsp;image/gif&nbsp;</td></tr>
+			<tr><td>&nbsp;jpeg&nbsp;</td><td>&nbsp;image/jpeg&nbsp;</td></tr>
+			<tr><td>&nbsp;jpg&nbsp;</td><td>&nbsp;image/jpeg&nbsp;</td></tr>
+			<tr><td>&nbsp;zip&nbsp;</td><td>&nbsp;application/zip&nbsp;</td></tr>
+		</table></center>
+		<h2>8.3 Index files</h2>
+		When the program starts, it initializes each servlet by calling its static <b>init</b> method. This method looks in the base directory of the servlet for its <b>index.html</b> file. If the file is not present and there does exist an <b>example-index.html</b> file in the same directory, then it copies that file into the <b>index.html</b> file. Since the index.html files are not included in the software release, this allows the administrator of the demonstration to change those files (to include, for instance, demonstration logos and better graphics) without losing their contents during an upgrade.
+
+		<h2>9 Batch Registration Processing</h2>
+		The Batch Registration tab allows processing lists of registrations formatted either as an XML file using the schema of the registrations.xml file (the registration database) or as a CSV file. For CVS files, the column names of each of the fields must be specified in the columns.properties file. The defaultCountry property must also be included in the columns.properties file. An example file is included in the release. This file is overwritten on an upgrade, so it is important to backup the file before an upgrade.
+
+		When registrations are processed, many subordinate threads are launched. To prevent the system from being flooded with threads, an interval field is provided in the header of the Batch Registration page. The default is 10 seconds. This field can be adjusted to see if shorter intervals will work.
+
+		<h2>10 Source Software Overview</h2>
+		Almost all the classes are in the org.rsna.xds package. The exceptions are classes provided by external libraries.
+		The following notes are intended to provide basic guidance to the key classes for programmers wishing to modify the code.
+		<dl>
+		<dt>XDSDemo
+		<dd>The main class of the program. This class loads the configuration, initializes the UI, initializes the servlets, and instantiates and starts the HTTP Server.
+		<dt>Configuration
+		<dd>This class contains all the configuration information, including the config.xml file, the registration database, and the event log object. An instance of this class is passed to the constructors of key objects in the system.
+		<dt>XDSEventLog
+		<dd>This class keeps a circular buffer of the last 'n' XDSEvent objects generated and appended by other objects (typically servlets) during operation of the program.
+		<dt>HttpServer
+		<dd>This class is a Thread that creates a ServerSocket, waits for connections on it, and instantiate an HttpHandler objects to service the connections.
+		<dt>HttpHandler
+		<dd>This class is a Thread that services an individual connection. It instantiates HttpRequest and HttpResponse objects for the connection and calls the static Servlet.getInstance(HttpRequest) method to obtain an instance of the Servlet to handle the request. It then calls the servlet's doGet or doPost method, depending on the request type.
+		<dt>HttpRequest
+		<dd>This class encapsulates a request. It provides access to the path, the content type, and the parameters (obtained either from the query string on a GET or the form parameters on a POST).
+		<dt>HttpResponse
+		<dd>This class encapsulates a response. It allows a servlet to send both text and files to the client in the connection's output stream. Files are written without having to be loaded completely into memory in order to minimize the footprint when returning large images. This class provides the mapping of file extensions to Content-Types in the setContentType(File) and setContentType(String) methods. To extend the known content types, add to the static ContentTypes class which is contained within the HttpResponse class.
+		<dt>Servlet
+		<dd>This is the base class for all servlets. It includes the static getInstance(HttpRequest) method which returns the appropriate subclass to service the request. The Servlet class also includes the default file server for handling GET requests that correspond to files. Thus, the getInstance method returns an instance of the Servlet class when it cannot find a subclass that corresponds to the requested path. To add new servlets to the system, create a new subclass of this class and update the getInstance method to return an instance of it in reponse to the base path that defines it. The base path for any servlet is defined by the first path element (eg "registration" for the RegistrationServlet). Each servlet handles all requests whose first path element matches its base path. The base path is defined in a servlet's static <b>servletPath</b> field.
+		<dt>ConfigurationServlet
+		<dd>This class is the Servlet subclass that returns a page containing the contents of the config.xml file in tabular form.
+		<dt>DashboardServlet
+		<dd>This class is the Servlet subclass that returns a page displaying the current status of the system.
+		<dt>RegistrationServlet
+		<dd>This class is the Servlet subclass that handles registrations. On a GET, it returns the index.html file from its base directory (/registration/index.html). On a POST, it returns a page displaying the request and then processes it. To process a request, it starts separate processing threads for all systems. Each system processes the request in accordance with its configuration.
+		<dt>PDQServlet
+		<dd>This class is the Servlet subclass that handles patient demographic queries. On a GET, it returns the index.html file from its base directory (/pdq/index.html). On a POST, it returns a page displaying the result of the registration database search.
+		<dt>MessagesServlet
+		<dd>This class is the Servlet subclass that provides access to collections of HL7 messages that have been captured using the program's Special tab. If called with no path, it returns a page containing a list of zip files in the base directory of the servlet. If called with a path to a file, it returns the file.
+		<dt>RegistrationDatabase
+		<dd>This class stores Registration objects in a Hashtable and allows the table to be updated and searched. It also provides persistence by saving the contents of the table as an XML file.
+		<dt>Registration
+		<dd>This class encapsulates a single registration, including the patient demographics, global ID, and the local IDs corresponding to each EHR system and DICOM system.
+		<dt>XDSElement
+		<dd>This class is the base class for all systems and datasets in the demo.
+		<dt>XDSSystem
+		<dd>This class is the XDSElement subclass for all systems in the demo.
+		<dt>DataSystem
+		<dd>This class is the XDSSystem subclass that represents systems that accept HL7 messages (PIXMgr, PDQMgr, and EHRSystem).
+		<dt>PIXMgr
+		<dd>This class is the DataSystem subclass that represents a PIX Manager.
+		<dt>PDQMgr
+		<dd>This class is the DataSystem subclass that represents a PDQ Manager.
+		<dt>Registry
+		<dd>This class is the PIXMgr subclass that represents a Registry. It behaves exactly as a PIXMgr but has a different name to avoid confusion.
+		<dt>Repository
+		<dd>This class is the XDSSystem subclass that represents a Repository.
+		<dt>EHRSystem
+		<dd>This class is the DataSystem subclass that represents an EHR System.
+		<dt>DCMSystem
+		<dd>This class is the EHRSystem subclass that represents a DICOM System.
+		<dt>HL7Message
+		<dd>This class encapsulates a simple HL7 message, providing management of its segments. It also provides methods to save the message to a file and transmit the message to an HL7 system.
+		<dt>HL7Segment
+		<dd>This class encapsulates an HL7 message segment, providing methods for getting and setting fields.
+		<dt>HL7A04
+		<dd>This class is an abstract class to encapsulate an HL7 A04 message. It instantiates the required segments in the proper order and provides methods for populating the required fields.
+		<dt>HL7ITI8
+		<dd>This class extends HL7A04 to create an ITI8 transaction.
+		<dt>HL7RAD1
+		<dd>This class extends HL7A04 to create a RAD1 transaction.
+		<dt>HL7RAD4
+		<dd>This class implements the RAD4 transaction.
+		<dt>HL7Field
+		<dd>This class encapsulates a field in an HL7 message. It is used only to store the contents of <b>hl7</b> elements in the config.xml file, as shown in the <b>ehrsystem</b> and <b>dcmsystem</b> examples in the config.xml section, above. These fields allow messages to be configured individually for each system when necessary.
+		<dt>KOS
+		<dd>This class encapsulates a DICOM Key Object Selection object. It is created during the processing of a study for a DicomSystem and transmitted (when enabled by the configuration of the DicomSystem) to the Repository.
+		<dt>XDSSoapRequest
+		<dd>This class provides transport for a metadata file and its associated XML object. This is used by the Repository class to send a CDA to a repository.
+		<dt>Study
+		<dd>This class is the XDSElement subclass that encapsulates a DICOM study. It points to the DicomSystem to which it will be sent.
+		<dt>DocSet
+		<dd>This class is the XDSElement subclass that encapsulates a collection of documents. It points to the Repository to which it will be sent.
+		<dt>SimpleInstaller
+		<dd>This class is the base class for the program's installer.
+		<dt>Installer
+		<dd>This class is the SimpleInstaller subclass that provides the parameters required for installation of XDSdemo.
+	</body>
+</html>

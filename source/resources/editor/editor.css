@@ -1,0 +1,50 @@
+div#right {
+	padding: 10px;
+}
+
+div#right p {
+	color: blue;
+	font-size: 12pt;
+	font-family: sans-serif;
+	font-weight: bold;
+	margin-top: 15px;
+	margin-bottom: 5px
+}
+
+div#right table {
+	width: 100%;
+	padding-top: 0px;
+	margin-top: 0px;
+	margin-bottom: 30px;
+}
+
+div#right table tr {
+	background: white;
+}
+
+div#right table td.left {
+	width: 230px;
+	font-family: monospace;
+	font-size: 10pt;
+	font-weidht: normal;
+}
+
+div#right table td.right {
+	font-family: monospace;
+}
+
+div#right table td.right p.help {
+	color: #a0a0a0;
+	font-size: 9pt;
+	font-family: sans-serif;
+	font-weight:normal;
+	margin: 0px;
+	padding: 0px;
+	margin-left: 20px
+}
+
+div#right table td.right input.text {
+	width: 100%;
+	font-family: monospace;
+	font-size: 10pt;
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<!-- For all valid codes for NIST affinity domain, check http://hcxw2k1.nist.gov/XdsDocs/AffinityDomain/codes.xml-->
+
+<XDSDocumentEntry>
+    <authorRole                                 >XDSITEST_DICOM_INSTANCE_PUBLISHER</authorRole>
+    <classCode                  displayName=    "Communication"
+                                codingScheme=   "Connect-a-thon classCodes"
+                                                >Communication</classCode>
+    <confidentialityCode        displayName=    "Celebrity"
+                                codingScheme=   "Connect-a-thon confidentialityCodes"
+                                                >C</confidentialityCode>
+    <healthCareFacilityTypeCode displayName=    "Home"
+                                codingScheme=   "Connect-a-thon healthcareFacilityTypeCodes"
+                                                >Home</healthCareFacilityTypeCode>
+    <languageCode                               >en-us</languageCode>
+    <practiceSettingCode        displayName=    "Anesthesia"
+                                codingScheme=   "Connect-a-thon practiceSettingCodes"
+                                                >Anesthesia</practiceSettingCode>
+    <typeCode                   displayName=    "Nursing Home Comprehensive History and Physical Note"
+                                codingScheme=   "LOINC"
+                                                >34096-8</typeCode>
+</XDSDocumentEntry>

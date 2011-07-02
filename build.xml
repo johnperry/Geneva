@@ -1,0 +1,108 @@
+<project name="Geneva" default="installer" basedir=".">
+
+	<property name="name" value="Geneva"/>
+
+	<property name="build" value="${basedir}/build"/>
+	<property name="source" value="${basedir}/source"/>
+	<property name="java" value="${source}/java"/>
+	<property name="files" value="${source}/files"/>
+	<property name="resources" value="${source}/resources"/>
+	<property name="geneva" value="org/rsna/geneva"/>
+	<property name="installer" value="${geneva}/installer"/>
+	<property name="libraries" value="${basedir}/libraries"/>
+	<property name="products" value="${basedir}/products"/>
+	<property name="documentation" value="${basedir}/documentation"/>
+	<property name="title" value="Geneva"/>
+	<property name="copyright" value="Copyright &#169; 2010 Radiological Society of North America"/>
+
+   <path id="classpath">
+      <pathelement location="${libraries}/util.jar"/>
+      <pathelement location="${libraries}/dcm4che.jar"/>
+      <pathelement location="${libraries}/getopt.jar"/>
+      <pathelement location="${libraries}/log4j.jar"/>
+      <pathelement location="${libraries}/fop.jar"/>
+      <pathelement location="${libraries}/avalon-framework-4.2.0.jar"/>
+      <pathelement location="${libraries}/commons-logging-1.1.jar"/>
+      <pathelement location="${libraries}/submission.jar"/>
+      <pathelement location="${libraries}/saaj-api.jar"/>
+      <pathelement location="${libraries}/mail.jar"/>
+   </path>
+
+	<target name="clean">
+		<delete dir="${build}" failonerror="false"/>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${build}"/>
+		<tstamp>
+			<format property="today" pattern="dd-MMMM-yyyy"/>
+			<format property="now" pattern="HH:mm:ss"/>
+		</tstamp>
+		<echo message="Time now ${now}"/>
+		<mkdir dir="${build}"/>
+		<mkdir dir="${products}"/>
+	</target>
+
+	<target name="geneva" depends="init">
+		<javac destdir="${build}" optimize="on"
+				classpathref="classpath"
+				debug="true" debuglevel="lines,vars,source">
+			<src path="${java}"/>
+			<!-- <compilerarg value="-Xlint:unchecked"/> -->
+			<!-- <compilerarg value="-Xlint:deprecation"/> -->
+		</javac>
+
+		<copy overwrite="true" todir="${build}">
+			<fileset dir="${resources}"/>
+		</copy>
+
+		<jar jarfile="${products}/${name}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="org.rsna.geneva.main.Geneva"/>
+				<attribute name="Implementation-Version" value="${today} @ ${now}"/>
+				<attribute name="Class-Path" value="libraries/util.jar"/>
+			</manifest>
+			<fileset dir="${build}"
+				includes="${geneva}/** editor/**"
+				excludes="${installer}/Installer** ${installer}/SimpleInstaller**"/>
+		</jar>
+	</target>
+
+	<target name="installer" depends="geneva">
+		<mkdir dir="${build}/${name}"/>
+		<mkdir dir="${build}/${name}/libraries"/>
+
+		<copy overwrite="true" todir="${build}/${name}">
+			<fileset dir="${products}" includes="${name}.jar"/>
+			<fileset dir="${files}" includes="**"/>
+		</copy>
+
+		<copy overwrite="true" todir="${build}/${name}/libraries">
+			<fileset dir="${libraries}" includes="*.*"/>
+		</copy>
+
+		<jar destfile="${products}/${name}-installer.jar">
+			<manifest>
+				<attribute name="Main-Class" value="org.rsna.geneva.installer.Installer"/>
+				<attribute name="Implementation-Version" value="${today} @ ${now}"/>
+			</manifest>
+			<fileset dir="${build}"
+				includes="${installer}/Installer**
+						  ${installer}/SimpleInstaller**
+						  ${name}/**"/>
+		</jar>
+
+		<!--<delete file="${products}/${name}.jar"/>-->
+	</target>
+
+	<target name="all" depends="clean, installer, javadocs"/>
+
+	<target name="javadocs">
+		<mkdir dir="${documentation}"/>
+		<javadoc destdir="${documentation}" sourcepath="${java}" classpathref="classpath"
+				 doctitle="${title}" windowtitle="${title}" bottom="${copyright}">
+			<package name="org.*"/>
+		</javadoc>
+	</target>
+
+</project>
